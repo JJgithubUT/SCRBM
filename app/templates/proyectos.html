@@ -1,0 +1,75 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %} Proyectos {% endblock %}
+
+{% block head %}
+<style>
+.btn_ingresar_proyecto{
+    color: black;
+    text-decoration: none;
+    margin-right: 20px;
+    margin-left: 40px;
+    cursor: pointer;
+}
+
+.btn_ingresar_proyecto:hover{
+    color: rgb(101, 101, 101);
+}
+</style>
+{% endblock %}
+
+{% block contenido %}
+
+ <div class="body_materiales">
+
+    <h2 style="margin-left: 45%; margin-bottom: 50px; margin-top: 50px;">Proyectos</h2>
+    <a href="{{url_for('registrar_proyecto')}}" class="btn_registrar">Registrar nuevo proyecto</a>
+    <a class="regresar_menu" href="{{url_for('dashboard')}}">Regresar al menu</a>
+
+    <table class="tabla_materiales">
+        <thead>
+            <th>N°</th>
+            <th>Detalles</th>
+            <th>Nombre</th>
+            <th>Título</th>
+            <th>Costo</th>
+            <th>Eliminar</th>
+        </thead>
+
+        <tbody>
+            {% for proyecto in proyectos %}
+                <tr>
+                    <td>{{proyecto.0}}</td>
+                    <td>
+                        <a href="{{url_for('detalles_proyecto', id_proyecto=proyecto[0] )}}" class="btn_ingresar_proyecto"><i class="fa-solid fa-pen-to-square" ></i></a>
+                    </td>
+                    <td>{{proyecto.2}}</td>
+                    <td>{{proyecto.3}}</td>
+                    <td>$$$$$</td>
+                    <td>
+                        <a href="#modal_eliminar_proyecto_{{proyecto[0]}}"><i class="fa-solid fa-trash"></i></a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% for proyecto in proyectos %}
+        <div class="modal_eliminar_material" id="modal_eliminar_proyecto_{{proyecto[0]}}">
+            <h2>Eliminar Proyecto</h2>
+            <p>¿Estas seguro de eliminar este Proyecto?</p>
+            <p>{{proyecto.2}} </p>
+            <div class="btns_eliminar_material">
+                <a href="{{url_for('eliminar_proyecto', id_proyecto=proyecto[0])}}">Aceptar</a>
+                <a href="#">Cancelar</a>
+            </div>
+        </div>
+    {% endfor %}
+
+    {% for proyecto in proyectos %}
+    
+    {% endfor %}
+
+ </div>
+
+{% endblock %}

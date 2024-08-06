@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/estilos.css')}}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inicio de sesion</title>
+</head>
+
+<div class="body_index">
+
+    <div class="">
+        <h1>Registrate</h1>
+
+        <form action="{{url_for('proceso_registro')}}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+            <p>Ingresa tus nombres</p>
+            <input type="text" placeholder="Nombres..." id="username" name="username">
+
+            <p>Ingresa tus apellidos</p>
+            <input type="text" placeholder="Apellidos..." id="apellidos" name="apellidos">
+
+            <p>Ingresa tu correo</p>
+            <input type="email" placeholder="Correo..." id="floatingInput" name="correo">
+
+            <p>Ingresa tu contraseña</p>
+            <input type="password" placeholder="Contraseña..." id="floatingPassword" name="password">
+            
+            <button type="submit">Crear cuenta</button>
+        </form>
+        
+    </div>
+    
+</div>
+
+</html>

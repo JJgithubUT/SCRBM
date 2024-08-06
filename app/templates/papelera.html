@@ -1,0 +1,147 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %} Unidades {% endblock %}
+
+
+
+{% block head %} {% endblock %}
+
+
+
+{% block contenido %}
+<body class="body_papelera">
+    <div class="contenido_papelera">
+
+        <div class="texto_bienvenida_papelera">
+            <h1 style="font-size: 50px;">Papelera</h1>
+            <p>Bienvenido a tu papelera, aqui encontraras todos los datos que alguna vez eliminaste.
+            Aqui podras restaurarlos o eliminarlos definitivamente.
+            </p>
+        </div>
+
+        <details>
+            <summary>Proyectos</summary>
+            
+        </details>
+
+        <details>
+
+            <summary>Unidades</summary>
+
+            <table class="tabla_unidades_papelera">
+                <thead>
+                    <th>Unidad de medida</th>
+                    <th>Eliminar</th>
+                    <th>Restaurar</th>
+                </thead>
+                <tbody>
+                    {% for unidad in unidades %}
+                    <tr>
+                        <td>{{unidad[1]}}</td>
+                        <td>
+                            <a class="btn_eliminar" href="#id_modal_eliminar_unidad_{{unidad[0]}}"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                        <td><a href="#"><i class="fa-solid fa-trash-can-arrow-up"></i></a></td>
+                                       
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+
+        </details>
+
+        <details>
+            <summary>Materiales</summary>
+            <table class="tabla_materiales_papelera">
+                <thead>
+                    <th>Nombre del material</th>
+                    <th>Costo</th>
+                    <th>Unidad</th>
+                    <th>Eliminar</th>
+                    <th>Restaurar</th>
+                </thead>
+                <tbody>
+                    {% for material in materiales %}
+                    <tr>
+                        <td>{{material.1}}</td>
+                        <td>${{material.2}}</td>
+                        <td>{{material.3}}</td>
+                        <td>
+                            <a class="btn_eliminar" href="#modal_eliminar_material_{{material[0]}}"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                        <td><a href="#"><i class="fa-solid fa-trash-can-arrow-up"></i></a></td>
+                     
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+
+        </details>
+
+        <details>
+            <summary>Basicos</summary>
+        </details>
+
+        <details>
+            <summary>Oficios</summary>
+            <table class="tabla_oficios_papelera">
+                <thead>
+                    <th>Nombre del oficio</th>
+                    <th>Unidad</th>
+                    <th>Costo</th>
+                    <th>Eliminar</th>
+                    <th>Restaurar</th>
+                </thead>
+                <tbody>
+                    {% for oficio in oficios %}
+                    <tr>
+                        <td>{{oficio.1}}</td>
+                        <td>{{oficio.2}}</td>
+                        <td>${{oficio.3}}</td>
+                        <td>
+                            <a class="btn_eliminar" href="#modal_eliminar_oficio_{{oficio[0]}}"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                        <td><a href="#"><i class="fa-solid fa-trash-can-arrow-up"></i></a></td>
+        
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </details>
+
+        <details>
+            <summary>Maquinaria</summary>
+
+            <table class="tabla_maquinas_papelera">
+                <thead>
+                    <th>Nombre de la maquina</th>
+                    <th>Costo</th>
+                    <th>Vida util</th>
+                    <th>Unidad</th>
+                    <th>Eliminar</th>
+                    <th>Restaurar</th>
+                </thead>
+                <tbody>
+                    {% for maquina in maquinaria %}
+                    <tr>
+                        <td>{{maquina.1}}</td>
+                        <td>${{maquina.2}}</td>
+                        <td>{{maquina.3}}</td>
+                        <td>{{maquina.4}} </td>
+                        <td>
+                            <a class="btn_eliminar" href="#modal_eliminar_maquina_{{maquina[0]}}"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                        <td><a href="#"><i class="fa-solid fa-trash-can-arrow-up"></i></a></td>
+                     
+                    </tr>
+                </tbody>
+                {% endfor %}
+            </table>
+
+        </details>
+        
+    </div>
+    
+</body>
+
+{% endblock %}

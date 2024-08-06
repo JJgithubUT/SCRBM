@@ -1,0 +1,45 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %} Registrar Proyecto {% endblock %}
+
+{% block head %} {% endblock %}
+
+{% block contenido %}
+
+<div class="body_registrar_material">
+    <a class="btn_regresar" href="{{url_for('proyectos')}}">Regresar</a>
+
+    <form method="post" class="form_regis_material" action="{{url_for('registrar_proyecto_proceso')}}">
+
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+        <h2>Registra un Proyecto</h2>
+
+        <p>Nombre</p>
+        <input type="text" id="nombre_proyecto" name="nombre_proyecto" placeholder="Nombre del proyecto">
+
+        <p>Titulo</p>
+        <input type="text" id="titulo_proyecto" name="titulo_proyecto" placeholder="Titulo del proyecto">
+
+        <p>Colonia</p>
+        <input type="text" id="colonia_proyecto" name="colonia_proyecto" placeholder="Colonia">
+
+        <p>Municipio</p>
+        <input type="text" id="municipio_proyecto" name="municipio_proyecto" placeholder="Municipio">
+
+        <p>Estado</p>
+        <input type="text" id="estado_proyecto" name="estado_proyecto" placeholder="Estado">
+
+        <p>Nombre del cliente</p>
+        <input type="text" id="nombrecliente_proyecto" name="nombrecliente_proyecto" placeholder="Nombre del cliente">
+
+        <p>¿Es gubernamental?</p>
+        <input type="checkbox" id="gubernamental_proyecto" name="gubernamental_proyecto">
+
+        <button type="submit">Guardar</button>
+
+    </form>
+
+</div>
+
+{% endblock %}

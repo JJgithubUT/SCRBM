@@ -1,0 +1,403 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %} Detalles Concepto {% endblock %}
+
+{% block head %}
+<style>
+.alinear-horizontal {
+    display: flex;
+    justify-content: center; /* Centra los elementos horizontalmente */
+    align-items: center; /* Centra los elementos verticalmente (opcional) */
+}
+
+.alinear-horizontal > * {
+    margin: 0 7px; /* Espaciado horizontal entre los elementos */
+}
+
+/* Inicio barras de busqueda */
+
+#resultsmats {
+    display: none;
+    border: 1px solid #ccc;
+    max-height: 150px; /* Limitar la altura del contenedor */
+    overflow-y: auto; /* Añadir barra de desplazamiento */
+    position: absolute;
+    background: white;
+    width: 100%;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+}
+.resultmats {
+    padding: 10px;
+    cursor: pointer;
+    color: black;
+}
+.resultmats:hover {
+    background-color: #f1f1f1;
+}
+.hiddenmats {
+    display: none;
+}
+/*---------------*/
+#resultsmaqs {
+    display: none;
+    border: 1px solid #ccc;
+    max-height: 150px; /* Limitar la altura del contenedor */
+    overflow-y: auto; /* Añadir barra de desplazamiento */
+    position: absolute;
+    background: white;
+    width: 100%;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+}
+.resultmaqs {
+    padding: 10px;
+    cursor: pointer;
+    color: black;
+}
+.resultmaqs:hover {
+    background-color: #f1f1f1;
+}
+.hiddenmaqs {
+    display: none;
+}
+
+/* Fin barras de busqueda */
+
+
+
+
+.modal_eliminar_materialconcepto{
+    display: none;
+    position: fixed;
+    background-color: white;
+    color: black;
+    text-align: left;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    border: 1px solid black;
+    top: 140px;
+    margin-left: 20%;
+}
+
+.modal_eliminar_materialconcepto.mostrar_modal_eliminar_materialconcepto {
+    display: block;
+}
+
+
+.modal_eliminar_materialconcepto h2{
+    margin-bottom: 20px;
+}
+
+.modal_eliminar_materialconcepto p{
+    color: black;
+    margin-bottom: 20px;
+}
+
+
+
+
+.btn_editar_materialconcepto{
+    color: black;
+    text-decoration: none;
+    margin-right: 20px;
+    margin-left: 40px;
+    cursor: pointer;
+}
+
+.btn_editar_materialconcepto:hover{
+    color: rgb(101, 101, 101);
+}
+
+.modal_editar_materialconcepto{
+    display: none;
+    position: fixed;
+    background-color: white;
+    color: black;
+    text-align: left;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    border: 1px solid black;
+    top: 140px;
+    margin-left: 20%;
+}
+
+.modal_editar_materialconcepto.mostrar_modal_editar_materialconcepto {
+    display: block;
+}
+
+
+.modal_editar_materialconcepto h2{
+    margin-bottom: 20px;
+}
+
+.modal_editar_materialconcepto p{
+    color: black;
+    margin-bottom: 20px;
+}
+
+
+
+
+.btn_editar_maquinariaconcepto{
+    color: black;
+    text-decoration: none;
+    margin-right: 20px;
+    margin-left: 40px;
+    cursor: pointer;
+}
+
+.btn_editar_maquinariaconcepto:hover{
+    color: rgb(101, 101, 101);
+}
+
+.modal_editar_maquinariaconcepto{
+    display: none;
+    position: fixed;
+    background-color: white;
+    color: black;
+    text-align: left;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    border: 1px solid black;
+    top: 140px;
+    margin-left: 20%;
+}
+
+.modal_editar_maquinariaconcepto.mostrar_modal_editar_maquinariaconcepto {
+    display: block;
+}
+
+
+.modal_editar_maquinariaconcepto h2{
+    margin-bottom: 20px;
+}
+
+.modal_editar_maquinariaconcepto p{
+    color: black;
+    margin-bottom: 20px;
+}
+
+
+
+
+
+.modal_eliminar_maquinariaconcepto{
+    display: none;
+    position: fixed;
+    background-color: white;
+    color: black;
+    text-align: left;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    border: 1px solid black;
+    top: 140px;
+    margin-left: 20%;
+}
+
+.modal_eliminar_maquinariaconcepto.mostrar_modal_eliminar_maquinariaconcepto {
+    display: block;
+}
+
+
+.modal_eliminar_maquinariaconcepto h2{
+    margin-bottom: 20px;
+}
+
+.modal_eliminar_maquinariaconcepto p{
+    color: black;
+    margin-bottom: 20px;
+}
+
+
+
+
+
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="body_materiales">
+
+<h2 style="margin-left: 10%; margin-bottom: 50px; margin-top: 50px;">Concepto: {{concepton.1}}</h2>
+<div class="alinear-horizontal">
+    <p>N°: {{concepton.0}}</p>
+    <p>Proyecto: {{concepton.2}}</p>
+    <p>Unidad: {{concepton.3}}</p>
+    <p>% Maq. y Equipo: {{concepton.4}}</p>
+    <p>% Indirectos: {{concepton.5}}</p>
+    <p>% Financiamiento: {{concepton.6}}</p>
+    <p>% Utilidad: {{concepton.7}}</p>
+</div>
+
+<a class="regresar_menu" href="{{url_for('detalles_proyecto', id_proyecto=concepton[8])}}">Regresar al proyecto</a>
+
+<details open>
+    <summary>Materiales del concepto</summary>
+
+    <div style="position: relative; width: 300px;">
+        <input type="text" id="searchBoxmats" placeholder="Buscar materiales..." style="width: 100%;">
+        <div id="resultsmats">
+            {% for material in materiales %}
+            <div class="resultmats">
+                <a href="{{url_for('registrar_material_concepto', fk_id_con=concepton[0], fk_id_mat=material[0], costo_mat=material[2]) }}">{{material.1}}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if materialon %}
+    <table class="tabla_materiales">
+        <thead>
+            <th>Editar</th>
+            <th>Nombre</th>
+            <th>Unidad</th>
+            <th>Costo</th>
+            <th>Cantidad</th>
+            <th>Importe</th>
+            <th>Remover</th>
+        </thead>
+        <tbody>
+            {% for material in materialon %}
+            <tr>
+                <td>
+                    <a class="btn_editar_materialconcepto" href="#id_modal_editar_materialconcepto_{{ material[7] }}">
+                        <i class="fa-solid fa-pen-to-square" ></i>
+                    </a>
+                </td>
+                <td>{{material.1}}</td>
+                <td>{{material.6}}</td>
+                <td>${{ material.2 | round(5) }}</td>
+                <td>{{ material.3 | round(5) }}</td>
+                <td>{{material.4 | round(5) }}</td>
+                <td>
+                    <a class="btn_eliminar" href="#modal_eliminar_materialcon_{{ material[7] }}"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No hay materiales dentro del concepto, insertar en el cuadro de búsqueda.</p>
+    {% endif %}
+
+</details>
+
+<details open>
+    <summary>Maquinaria del concepto</summary>
+
+    <div style="position: relative; width: 300px;">
+        <input type="text" id="searchBoxmaqs" placeholder="Buscar maquinaria..." style="width: 100%;">
+        <div id="resultsmaqs">
+            {% for maquina in maquinaria %}
+            <div class="resultmaqs">
+                <a href="{{url_for('registrar_maquinaria_concepto', fk_id_con=concepton[0], fk_id_maq=maquina[0], costo_maq=maquina[2]) }}">{{maquina.1}}</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    {% if maquinon %}
+    <table class="tabla_materiales">
+        <thead>
+            <th>Editar</th>
+            <th>Nombre</th>
+            <th>Unidad</th>
+            <th>Costo</th>
+            <th>Cantidad</th>
+            <th>Importe</th>
+            <th>Vida util</th>
+            <th>Remover</th>
+        </thead>
+        <tbody>
+            {% for maquina in maquinon %}
+            <tr>
+                <td>
+                    <a class="btn_editar_maquinariaconcepto" href="#id_modal_editar_maquinariaconcepto_{{ maquina[8] }}">
+                        <i class="fa-solid fa-pen-to-square" ></i>
+                    </a>
+                </td>
+                <td>{{maquina.1}}</td>
+                <td>{{maquina.7}}</td>
+                <td>{{ maquina.2 | round(5) }}</td>
+                <td>{{ maquina.3 | round(5) }}</td>
+                <td>{{ maquina.4 | round(5) }}</td>
+                <td>{{ maquina.5 | round(5) }}</td>
+                <td>
+                    <a class="btn_eliminar" href="#id_modal_eliminar_maquinariaconcepto_{{ maquina[8] }}"><i class="fa-solid fa-trash"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No hay maquinaria dentro del concepto, insertar en el cuadro de búsqueda.</p>
+    {% endif %}
+
+</details>
+
+{% for material in materialon %}
+<div class="modal_eliminar_materialconcepto" id="modal_eliminar_materialcon_{{ material[7] }}">
+    <h3 style="margin-bottom: 20px; font-size: 25px;">Eliminar material</h3>
+    <p>¿Estas seguro de eliminar este material del concepto?</p>
+    <p>{{material.1}} </p>
+    <div class="btns_modal_crear_proyecto">
+        <a href="{{url_for('eliminar_material_concepto', id_conmat=material[7], id_concepto=concepton[0])}}">Aceptar</a>
+        <a href="#" id="btn_cancelar_registrar_proyecto">Cancelar</a>
+    </div>
+</div>
+{% endfor %}
+
+{% for material in materialon %}
+<div class="modal_editar_materialconcepto" id="id_modal_editar_materialconcepto_{{ material[7] }}">
+    <h2 style="margin-bottom: 20px; font-size: 25px;">Editar Material</h2>
+    <form action="{{url_for('editar_material_concepto', id_concepto=concepton[0])}}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+        <p>Cantidad del material para el concepto:</p>
+        <input type="number" step="0.00001" placeholder="Cantidad del material..." name="cant_conmat" value="{{material[3]}}" required>
+        <input type="hidden" name="id_conmat" value="{{material[7]}}" required>
+        <p></p>
+        <div class="btns_modal_crear_proyecto">
+            <button type="submit">Editar</button>
+            <a href="#">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endfor %}
+
+{% for maquina in maquinon %}
+<div class="modal_editar_maquinariaconcepto" id="id_modal_editar_maquinariaconcepto_{{ maquina[8] }}">
+    <h2 style="margin-bottom: 20px; font-size: 25px;">Editar Maquinaria</h2>
+    <form action="{{url_for('editar_maquinaria_concepto', id_concepto=concepton[0])}}" method="POST">
+        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+        <p>Cantidad para la maquinaria:</p>
+        <input type="number" step="0.00001" placeholder="Cantidad de Maquinaria..." name="cant_conmaq" value="{{maquina[3]}}" required>
+        <input type="hidden" name="id_conmaq" value="{{maquina[8]}}" required>
+        <p></p>
+        <div class="btns_modal_crear_proyecto">
+            <button type="submit">Editar</button>
+            <a href="#">Cancelar</a>
+        </div>
+    </form>
+</div>
+{% endfor %}
+
+{% for maquina in maquinon %}
+<div class="modal_eliminar_maquinariaconcepto" id="id_modal_eliminar_maquinariaconcepto_{{ maquina[8] }}">
+    <h3 style="margin-bottom: 20px; font-size: 25px;">Eliminar maquinaria</h3>
+    <p>¿Estas seguro de eliminar esta maquinaria del concepto?</p>
+    <p>{{maquina.1}} </p>
+    <div class="btns_modal_crear_proyecto">
+        <a href="{{url_for('eliminar_maquinaria_concepto', id_conmaq=maquina[8], id_concepto=concepton[0])}}">Aceptar</a>
+        <a href="#">Cancelar</a>
+    </div>
+</div>
+{% endfor %}
+
+
+
+</div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{% endblock %}

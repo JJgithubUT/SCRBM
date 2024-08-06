@@ -1,0 +1,318 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %} Detalles Proyecto {% endblock %}
+
+{% block head %}
+<style>
+.alinear-horizontal {
+    display: flex;
+    justify-content: center; /* Centra los elementos horizontalmente */
+    align-items: center; /* Centra los elementos verticalmente (opcional) */
+}
+
+.alinear-horizontal > * {
+    margin: 0 5px; /* Espaciado horizontal entre los elementos */
+}
+
+.btn_ingresar_concepto{
+    color: black;
+    text-decoration: none;
+    margin-right: 20px;
+    margin-left: 40px;
+    cursor: pointer;
+}
+
+.btn_ingresar_concepto:hover{
+    color: rgb(101, 101, 101);
+}
+
+/* INI Modal registrar concepto */
+.modal_registrar_concepto {
+    display: none;
+    position: fixed;
+    background-color: white;
+    color: black;
+    text-align: left;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    border: 1px solid black;
+    top: 140px;
+    margin-left: 20%;
+}
+
+.modal_registrar_concepto.show {
+    display: block;
+}
+
+.modal_registrar_concepto h2 {
+    margin-bottom: 20px;
+    font-size: 25px;
+}
+
+.modal_registrar_concepto p {
+    color: black;
+    margin-top: 10px;
+    margin-bottom: 3px;
+}
+/* FIN Modal registrar concepto */
+
+/* INI Estilos para botones */
+.btns_eliminar_oficio {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btns_eliminar_oficio a {
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: black;
+    text-decoration: none;
+    padding: 5px;
+    color: white;
+}
+
+.btns_eliminar_oficio a:hover {
+    background: linear-gradient(to top left, #33ccff 0%, #66ffff 100%);
+}
+/* FIN Estilos para botones */
+
+
+/* INI Modal editar proyecto */
+.modal_editar_proyecto {
+    display: none;
+    position: fixed;
+    background-color: white;
+    color: black;
+    text-align: left;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    border: 1px solid black;
+    top: 140px;
+    margin-left: 20%;
+}
+
+.modal_editar_proyecto.show {
+    display: block;
+}
+
+.modal_editar_proyecto h2 {
+    margin-bottom: 20px;
+    font-size: 25px;
+}
+
+.modal_editar_proyecto p {
+    color: black;
+    margin-top: 10px;
+    margin-bottom: 3px;
+}
+/* FIN Modal editar proyecto */
+
+/* INICIO Modal eliminar concepto*/
+.modal_eliminar_concepto{
+    display: none;
+    position: fixed;
+    background-color: white;
+    color: black;
+    text-align: left;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    border: 1px solid black;
+    top: 140px;
+    margin-left: 20%;
+}
+
+.modal_eliminar_concepto.mostrar_modal_eliminar_concepto {
+    display: block;
+}
+
+
+.modal_eliminar_concepto h2{
+    margin-bottom: 20px;
+}
+
+.modal_eliminar_concepto p{
+    color: black;
+    margin-bottom: 20px;
+}
+
+.btns_eliminar_concepto{
+    display: flex;
+    justify-content: space-between;
+}
+
+.btns_eliminar_concepto a{
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: black;
+    text-decoration: none;
+    padding: 5px;
+    color: white;
+}
+
+.btns_eliminar_concepto a:hover{
+    background: linear-gradient(to top left, #33ccff 0%, #66ffff 100%);
+}
+/* FIN Modal eliminar concepto*/
+
+</style>
+{% endblock %}
+
+{% block contenido %}
+<div class="body_materiales">
+    <h2 style="margin-left: 10%; margin-bottom: 50px; margin-top: 50px;">Proyecto: {{proyectaso.2}}</h2>
+
+    <div class="alinear-horizontal">
+        <p>N°: {{proyectaso.0}}</p>
+        <p>Nombre: {{proyectaso.2}}</p>
+        <p>Título: {{proyectaso.3}}</p>
+        <p>Creador: </p>
+        <p>Dirección: {{proyectaso.4}}, {{proyectaso.5}}, {{proyectaso.6}}.</p>
+        <p>Cliente: {{proyectaso.7}}</p>
+        <p>
+            Tipo: 
+            {% if proyectaso.9 == true %}
+                Gubernamental
+            {% else %}
+                Partícular
+            {% endif %}
+        </p>
+        <p>Costo: </p>
+    </div>
+
+    <div class="alinear-horizontal">
+        <a class="regresar_menu" href="{{url_for('proyectos')}}">Regresar</a>
+        <a class="btn_registrar" href="#editar_proyecto" id="abrir_editar_proyecto">Editar datos</a>
+        <a class="btn_registrar" href="#registrar_concepto" id="abrir_registrar_concepto">Nuevo concepto</a>
+    </div>
+    
+    <p>Conceptos del proyecto</p>
+    <table class="tabla_materiales">
+        <thead>
+            <th>Detalles</th>
+            <th>Nombre</th>
+            <th>Unidad</th>
+            <th>Costo</th>
+            <th>Cantidad</th>
+            <th>% de maq. y eq.</th>
+            <th>Importe</th>
+            <th>Eliminar</th>
+        </thead>
+        <tbody>
+            {% for concepto in conceptos %}
+            <tr>
+                <td>
+                    <a href="{{ url_for('detalles_concepto', id_concepto=concepto[0]) }}" class=""> <!--BTN EDITAR CLASS-->
+                        <i class="fa-solid fa-gear"></i>
+                    </a>
+                </td>
+                <td>{{concepto.1}}</td>
+                <td>{{concepto.3}}</td>
+                <td></td>
+                <td>{{concepto.4}}</td>
+                <td>{{concepto.7}}%</td>
+                <td></td>
+                <td>
+                    <a class="btn_eliminar" href="#modal_eliminar_concepto_{{concepto.id_concepto}}">
+                        <i class="fa-solid fa-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="modal_registrar_concepto" id="registrar_concepto">
+
+        <h2 style="margin-bottom: 20px; font-size: 25px;">Registrar Concepto</h2>
+        
+        <form action="{{url_for('registrar_concepto', id_proyecto=proyectaso[0] )}}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+            <input type="hidden" name="fk_proy_con" value="{{proyectaso[0]}}">
+
+                <p>Nombre del Concepto</p>
+                <input type="text" placeholder="Nombre del concepto..." id="floatingNombre" name="nombre_concepto" required>
+
+                <p>Unidad</p>
+                <label for="fk_unid_con"></label>
+                <select class="" id="fk_unid_con" name="fk_unid_con">
+                    {% for unidad in unidades %}
+                        <option value="{{ unidad[0] }}">{{ unidad[1] }}</option>
+                    {% endfor %}
+                </select>
+
+                <p>Cantidad</p>
+                <input type="number" step="0.00001" placeholder="Cantidad..." name="cantidad_concepto" required>
+
+                <p>% de Maquinaria y Equipos</p>
+                <input type="number" step="0.00001" placeholder="% Maq. y Eq..." name="porcentajemaqyeq_con" required>
+
+                <p>% de Indirectos</p>
+                <input type="number" step="0.00001" placeholder="Indirectos..." name="indirectos_con" required>%
+
+                <p>% de Financiamiento</p>
+                <input type="number" step="0.00001" placeholder="Financiamiento..." name="financiamiento_con" required>%
+
+                <p>% de Utilidad</p>
+                <input type="number" step="0.00001" placeholder="Utilidad..." name="utilidad_con" required>%
+
+            <p></p>
+            <div class="btns_eliminar_oficio">
+                <button type="submit">Registrar</button>
+                <a href="#" id="btn_cancelar_registrar_concepto">Cancelar</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal_editar_proyecto" id="editar_proyecto">
+        <h2 style="margin-bottom: 20px; font-size: 25px;">Editar Proyecto</h2>
+        <form action="{{url_for('editar_proyecto_proceso', id_proyecto=proyectaso[0] )}}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+            <p>Nombre del proyecto</p>
+            <input type="text" placeholder="Nombre del proyecto..." id="floatingNombreProyecto" name="nombre_proyecto" value="{{proyectaso[2]}}" required>
+
+            <p>Título</p>
+            <input type="text" placeholder="Título del proyecto..." name="titulo_proyecto" value="{{proyectaso[3]}}" required>
+
+            <p>Colonia</p>
+            <input type="text" placeholder="Colonia del proyecto..." name="colonia_proyecto" value="{{proyectaso[4]}}" required>
+
+            <p>Municipio</p>
+            <input type="text" placeholder="Municipio del proyecto..." name="municipio_proyecto" value="{{proyectaso[5]}}" required>
+
+            <p>Estado</p>
+            <input type="text" placeholder="Estado del proyecto..." name="estado_proyecto" value="{{proyectaso[6]}}" required>
+
+            <p>Cliente</p>
+            <input type="text" placeholder="Cliente del proyecto..." name="nombrecliente_proyecto" value="{{proyectaso[7]}}" required>
+
+            <p>Gubernamental?</p>
+            <input type="checkbox" name="gubernamental_proyecto" {% if proyectaso[9] %}checked{% endif %}>
+
+            <p></p>
+            <div class="btns_eliminar_oficio">
+                <button type="submit">Editar</button>
+                <a href="#" id="btn_cancelar_editar_proyecto">Cancelar</a>
+            </div>
+
+        </form>
+    </div>
+
+    {% for concepto in conceptos %}
+        <div class="modal_eliminar_concepto" id="modal_eliminar_concepto_{{concepto.id_concepto}}">
+            <h3 style="margin-bottom: 20px; font-size: 25px;">Eliminar concepto</h3>
+            <p>¿Estas seguro de eliminar este concepto?</p>
+            <p>{{concepto.1}}</p>
+            <div class="btns_eliminar_concepto">
+                <a href="{{url_for('eliminar_concepto', id_proyecto=proyectaso[0], id_concepto=concepto[0])}}">Aceptar</a>
+                <a href="#">Cancelar</a>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

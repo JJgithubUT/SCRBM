@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{url_for('static', filename = 'css/estilos.css')}}">
+    <script src="https://kit.fontawesome.com/f2f934aa4b.js" crossorigin="anonymous"></script>
+    <script src="{{url_for('static', filename = 'JS/script.js')}}" defer></script>
+     <title>{% block titulo %} Inicio {% endblock %} </title> 
+    {% block head %} {% endblock %}
+</head>
+
+{% block vision_de_usuario %} {% endblock %}
+
+    <div class="vision_de_usuario">
+        <div class="usuario">
+
+             <button class="foto_usuario"><i class="fa-solid fa-user fa-3x"></i></button>
+             <div class="usuario_opciones">
+                <ul>
+                    <p>Usuario</p>
+                    <li>Mi cuenta</li>
+                    <li><a href="{{url_for('papelera')}}">Papelera</a></li>
+                    <li><a href="{{url_for('logout')}}">Cerrar sesión</a></li>
+                 </ul>
+             </div>
+        </div>
+     
+        <div class="opciones_proyecto">
+            <a href="{{url_for('proyectos')}}">Proyectos</a>
+            <a href="{{url_for('unidades')}}">Unidades</a>
+            <a href="{{url_for('materiales')}}">Materiales</a>
+            <a>Basicos</a>
+            <a href="{{url_for('oficios')}}">Oficios</a>
+            <a href="{{url_for('maquinaria')}}">Maquinaria</a>
+            
+        </div>
+
+        <div class="proyectos_recientes">
+            <p>Proyectos recientes:</p>
+
+        </div>
+        
+    </div>
+
+<body class="body_dashboard">
+    {% block contenido %} 
+
+
+    <a class="crear_proyecto" id="abrir_modal_crear_proyecto">
+        <i class="fas fa-plus-circle"></i>
+        <p>Nuevo proyecto</p>
+    </a>  
+
+    <form id="id_modal_crear_proyecto" class="modal_crear_proyecto" action="">
+        <h3 id="tiutlo_proyecto">Titulo del proyecto</h3>
+        <p>Nombre de el proyecto:</p>
+        <input type="text" placeholder="Titulo..." class="input_titulo_proyecto" id="input_titulo_proyecto">
+        <p>Gubernamental:</p>
+        <div class="label_gubernamental">
+            <label for="">
+                <input type="checkbox">Si
+            </label>
+
+            <label for="">
+                <input type="checkbox">No
+
+            </label>
+
+        </div>  
+
+        <div class="btns_modal_crear_proyecto">
+            <button href="#">Aceptar</button>
+            <button id="btn_cancelar_proyecto" >Cancelar</button>
+        </div>
+    </form>
+
+    
+
+    
+    {% endblock %}
+</body>
+
+</html>

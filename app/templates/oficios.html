@@ -1,0 +1,139 @@
+{% extends "dashboard.html" %}
+
+{% block titulo %} Oficios {% endblock %}
+
+
+{% block head %}
+<style>
+.navbar {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.navbar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.navbar ul li {
+    display: inline-block;
+    margin: 0 5px;
+}
+
+.navbar ul li a {
+    text-decoration: none;
+    color: #333; /* Color del texto */
+    padding: 5px 10px;
+    border: 1px solid #ccc; /* Borde */
+    border-radius: 3px;
+}
+
+.navbar ul li.active a {
+    background-color: #007bff; /* Color de fondo activo */
+    color: #fff; /* Color del texto activo */
+}
+
+.navbar ul li a:hover {
+    background-color: #f0f0f0; /* Color de fondo al pasar el mouse */
+}
+
+</style>
+{% endblock %}
+
+
+
+{% block contenido %}
+<div class="body_materiales">
+    <h2 style="margin-left: 45%; margin-bottom: 50px; margin-top: 50px;">Oficios</h2>
+    <a href="{{url_for('registrar_oficio')}}" class="btn_registrar">Registrar un nuevo oficio</a>
+ 
+    <table class="tabla_materiales">
+        <thead>
+            <th>Id del Oficio</th>
+            <th>Nombre</th>
+            <th>Unidad</th>
+            <th>Costo</th>
+            <th>Editar</th>
+            <th>Eliminar</th>
+        </thead>
+        <tbody>
+            {% for oficio in oficios %}
+            <tr>
+                <td>{{oficio.id_oficio}}</td>
+                <td>{{oficio.nombre_oficio}}</td>
+                <td>{{oficio.unitts}}</td>
+                <td>${{oficio.costo_oficio}}</td>
+                <td>
+                    <a href="{{url_for('editar_oficio', id_oficio=oficio.id_oficio )}}" class="btn_editar"><i class="fa-solid fa-pen-to-square" ></i></a>
+                </td>
+                <td>
+                    <a class="btn_eliminar" href="#modal_eliminar_oficio_{{oficio.id_oficio}}"><i class="fa-solid fa-trash"></i></a>
+                </td>
+
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+
+    <nav aria-label="Page navigation example" class="navbar">
+        <ul>
+            
+            {% if page > 3 %}
+            <li><a href="{{url_for('oficios')}}?page=1&per_page={{ per_page }}">
+                {% if page > 3 %}
+                &laquo;
+                {% else %}
+                {% endif %}
+                1
+            </a></li>
+            <li><span>...</span></li>
+            {% endif %}
+    
+            {% if page > 2 %}
+            <li><a href="{{url_for('oficios')}}?page={{ page - 2 }}&per_page={{ per_page }}">{{ page - 2 }}</a></li>
+            {% endif %}
+    
+            {% if page > 1 %}
+            <li><a href="{{url_for('oficios')}}?page={{ page - 1 }}&per_page={{ per_page }}">{{ page - 1 }}</a></li>
+            {% endif %}
+    
+            <li class="active"><a href="#">{{ page }}</a></li>
+    
+            {% if page < total_pages %}
+            <li><a href="{{url_for('oficios')}}?page={{ page + 1 }}&per_page={{ per_page }}">{{ page + 1 }}</a></li>
+            {% endif %}
+    
+            {% if page < total_pages - 1 %}
+            <li><a href="{{url_for('oficios')}}?page={{ page + 2 }}&per_page={{ per_page }}">{{ page + 2 }}</a></li>
+            {% endif %}
+    
+            {% if page < total_pages - 2 %}
+            <li><span>...</span></li>
+            <li><a href="{{url_for('oficios')}}?page={{ total_pages }}&per_page={{ per_page }}">
+                {{ total_pages }}
+                {% if page < total_pages - 2 %}
+                &raquo;
+                {% else %}
+                {% endif %}
+            </a></li>
+            {% endif %}
+        </ul>
+    </nav>
+
+
+    {% for oficio in oficios %}
+        <div class="modal_eliminar_oficio" id="modal_eliminar_oficio_{{oficio.id_oficio}}">
+            <h3 style="margin-bottom: 20px; font-size: 25px;">Eliminar oficio</h3>
+            <p>¿Estas seguro de eliminar este oficio?</p>
+            <p>{{oficio.1}} </p>
+            <div class="btns_eliminar_oficio">
+                <a href="{{url_for('eliminar_oficio', id_oficio = oficio.id_oficio)}}">Aceptar</a>
+                <a href="#" >Cancelar</a>
+            </div>
+        </div>
+    {% endfor %}
+
+</div>
+
+{% endblock %}
