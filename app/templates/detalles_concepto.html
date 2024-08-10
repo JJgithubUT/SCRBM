@@ -96,91 +96,6 @@
 
 
 
-.btn_editar_materialconcepto{
-    color: black;
-    text-decoration: none;
-    margin-right: 20px;
-    margin-left: 40px;
-    cursor: pointer;
-}
-
-.btn_editar_materialconcepto:hover{
-    color: rgb(101, 101, 101);
-}
-
-.modal_editar_materialconcepto{
-    display: none;
-    position: fixed;
-    background-color: white;
-    color: black;
-    text-align: left;
-    padding: 20px;
-    width: 300px;
-    border-radius: 15px;
-    border: 1px solid black;
-    top: 140px;
-    margin-left: 20%;
-}
-
-.modal_editar_materialconcepto.mostrar_modal_editar_materialconcepto {
-    display: block;
-}
-
-
-.modal_editar_materialconcepto h2{
-    margin-bottom: 20px;
-}
-
-.modal_editar_materialconcepto p{
-    color: black;
-    margin-bottom: 20px;
-}
-
-
-
-
-.btn_editar_maquinariaconcepto{
-    color: black;
-    text-decoration: none;
-    margin-right: 20px;
-    margin-left: 40px;
-    cursor: pointer;
-}
-
-.btn_editar_maquinariaconcepto:hover{
-    color: rgb(101, 101, 101);
-}
-
-.modal_editar_maquinariaconcepto{
-    display: none;
-    position: fixed;
-    background-color: white;
-    color: black;
-    text-align: left;
-    padding: 20px;
-    width: 300px;
-    border-radius: 15px;
-    border: 1px solid black;
-    top: 140px;
-    margin-left: 20%;
-}
-
-.modal_editar_maquinariaconcepto.mostrar_modal_editar_maquinariaconcepto {
-    display: block;
-}
-
-
-.modal_editar_maquinariaconcepto h2{
-    margin-bottom: 20px;
-}
-
-.modal_editar_maquinariaconcepto p{
-    color: black;
-    margin-bottom: 20px;
-}
-
-
-
 
 
 .modal_eliminar_maquinariaconcepto{
@@ -251,7 +166,6 @@
     {% if materialon %}
     <table class="tabla_materiales">
         <thead>
-            <th>Editar</th>
             <th>Nombre</th>
             <th>Unidad</th>
             <th>Costo</th>
@@ -262,15 +176,19 @@
         <tbody>
             {% for material in materialon %}
             <tr>
-                <td>
-                    <a class="btn_editar_materialconcepto" href="#id_modal_editar_materialconcepto_{{ material[7] }}">
-                        <i class="fa-solid fa-pen-to-square" ></i>
-                    </a>
-                </td>
                 <td>{{material.1}}</td>
                 <td>{{material.6}}</td>
                 <td>${{ material.2 | round(5) }}</td>
-                <td>{{ material.3 | round(5) }}</td>
+                <td>{{ material.3 | round(5) }}
+                    <form action="{{url_for('editar_material_concepto', id_concepto=concepton[0])}}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+                        <input type="number" step="0.00001" placeholder="Cantidad de Material..." name="cant_conmat" value="{{material[3]}}" required>
+                        <input type="hidden" name="id_conmat" value="{{material[7]}}" required>
+                        
+                        <button type="submit"x><i class="fa-solid fa-pen"></i></button>
+                    </form>
+                </td>
                 <td>{{material.4 | round(5) }}</td>
                 <td>
                     <a class="btn_eliminar" href="#modal_eliminar_materialcon_{{ material[7] }}"><i class="fa-solid fa-trash"></i></a>
@@ -302,7 +220,6 @@
     {% if maquinon %}
     <table class="tabla_materiales">
         <thead>
-            <th>Editar</th>
             <th>Nombre</th>
             <th>Unidad</th>
             <th>Costo</th>
@@ -314,15 +231,19 @@
         <tbody>
             {% for maquina in maquinon %}
             <tr>
-                <td>
-                    <a class="btn_editar_maquinariaconcepto" href="#id_modal_editar_maquinariaconcepto_{{ maquina[8] }}">
-                        <i class="fa-solid fa-pen-to-square" ></i>
-                    </a>
-                </td>
                 <td>{{maquina.1}}</td>
                 <td>{{maquina.7}}</td>
                 <td>{{ maquina.2 | round(5) }}</td>
-                <td>{{ maquina.3 | round(5) }}</td>
+                <td>
+                    <form action="{{url_for('editar_maquinaria_concepto', id_concepto=concepton[0])}}" method="POST">
+                        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+
+                        <input type="number" step="0.00001" placeholder="Cantidad del material..." name="cant_conmaq" value="{{maquina[3]}}" required>
+                        <input type="hidden" name="id_conmaq" value="{{maquina[8]}}" required>
+
+                        <button type="submit"><i class="fa-solid fa-pen"></i></button>
+                    </form>
+                </td>
                 <td>{{ maquina.4 | round(5) }}</td>
                 <td>{{ maquina.5 | round(5) }}</td>
                 <td>
@@ -350,40 +271,6 @@
 </div>
 {% endfor %}
 
-{% for material in materialon %}
-<div class="modal_editar_materialconcepto" id="id_modal_editar_materialconcepto_{{ material[7] }}">
-    <h2 style="margin-bottom: 20px; font-size: 25px;">Editar Material</h2>
-    <form action="{{url_for('editar_material_concepto', id_concepto=concepton[0])}}" method="POST">
-        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-        <p>Cantidad del material para el concepto:</p>
-        <input type="number" step="0.00001" placeholder="Cantidad del material..." name="cant_conmat" value="{{material[3]}}" required>
-        <input type="hidden" name="id_conmat" value="{{material[7]}}" required>
-        <p></p>
-        <div class="btns_modal_crear_proyecto">
-            <button type="submit">Editar</button>
-            <a href="#">Cancelar</a>
-        </div>
-    </form>
-</div>
-{% endfor %}
-
-{% for maquina in maquinon %}
-<div class="modal_editar_maquinariaconcepto" id="id_modal_editar_maquinariaconcepto_{{ maquina[8] }}">
-    <h2 style="margin-bottom: 20px; font-size: 25px;">Editar Maquinaria</h2>
-    <form action="{{url_for('editar_maquinaria_concepto', id_concepto=concepton[0])}}" method="POST">
-        <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-        <p>Cantidad para la maquinaria:</p>
-        <input type="number" step="0.00001" placeholder="Cantidad de Maquinaria..." name="cant_conmaq" value="{{maquina[3]}}" required>
-        <input type="hidden" name="id_conmaq" value="{{maquina[8]}}" required>
-        <p></p>
-        <div class="btns_modal_crear_proyecto">
-            <button type="submit">Editar</button>
-            <a href="#">Cancelar</a>
-        </div>
-    </form>
-</div>
-{% endfor %}
-
 {% for maquina in maquinon %}
 <div class="modal_eliminar_maquinariaconcepto" id="id_modal_eliminar_maquinariaconcepto_{{ maquina[8] }}">
     <h3 style="margin-bottom: 20px; font-size: 25px;">Eliminar maquinaria</h3>
@@ -399,5 +286,7 @@
 
 
 </div>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="{{url_for('static', filename = 'JS/script2.js')}}" defer></script>
+
 {% endblock %}

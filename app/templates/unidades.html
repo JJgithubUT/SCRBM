@@ -2,7 +2,61 @@
 
 {% block titulo %} Unidades {% endblock %}
 
-{% block head %} {% endblock %}
+{% block head %}
+
+<style>
+
+/* INICIO MODAL ELIMINAR UNIDAD */
+.modal_eliminar_unidad{
+    display: none;
+    position: fixed;
+    background-color: white;
+    color: black;
+    text-align: left;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    border: 1px solid black;
+    top: 140px;
+    margin-left: 20%;
+}
+
+.modal_eliminar_unidad.mostrar_modal_eliminar_unidad {
+    display: block;
+}
+
+
+.modal_eliminar_unidad h2{
+    margin-bottom: 20px;
+}
+
+.modal_eliminar_unidad p{
+    color: black;
+    margin-bottom: 20px;
+}
+
+.btns_eliminar_unidad{
+    display: flex;
+    justify-content: space-between;
+}
+
+.btns_eliminar_unidad a{
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: black;
+    text-decoration: none;
+    padding: 5px;
+    color: white;
+}
+
+.btns_eliminar_unidad a:hover{
+    background: linear-gradient(to top left, #33ccff 0%, #66ffff 100%);
+}
+/* FIN MODAL ELIMINAR OFICIO */
+
+</style>
+
+{% endblock %}
 
 <body class="body_unidades">
     {% block contenido %}
@@ -21,10 +75,10 @@
         <tbody>
             {% for unidad in unidades %}
             <tr>
-                <td>{{unidad['nombre_unidad']}}</td>
+                <td>{{unidad.nombre_unidad}}</td>
                 <td>
                     <a href="{{url_for('editar_unidad', id_unidad=unidad['id_unidad'])}}" class="btn_editar"><i class="fa-solid fa-pen-to-square" ></i></a>
-                    <a class="btn_eliminar" href="#id_modal_eliminar_unidad_{{unidad[0]}}"><i class="fa-solid fa-trash"></i></a>
+                    <a class="btn_eliminar" href="#id_modal_eliminar_unidad_{{unidad.id_unidad}}"><i class="fa-solid fa-trash"></i></a>
                 </td>
                 
             </tr>
@@ -33,16 +87,15 @@
     </table>
 
     {% for unidad in unidades %}
-        <div class="modal_eliminar_unidad" id="id_modal_eliminar_unidad_{{ unidad['id_unidad'] }}">
-            <h2>Eliminar unidad</h2>
+        <div class="modal_eliminar_unidad" id="id_modal_eliminar_unidad_{{unidad.id_unidad}}">
+            <h3 style="margin-bottom: 20px; font-size: 25px;">Eliminar unidad</h3>
             <p>¿Esta seguro de eliminar esta unidad?</p>
-            <p>{{unidad['nombre_unidad']}} </p>
-            <div class="opciones_eliminar_unidad">
-                <a href="{{url_for('eliminar_unidad', id_unidad=unidad['id_unidad'])}}" class="btn_aceptar_eliminar_unidad">Aceptar</a> 
-                <a href="#" class="btn_cancelar_eliminar_unidad">Cancelar</a>
+            <p>{{unidad.1}} </p>
+            <div class="btns_eliminar_unidad">
+                <a href="{{url_for('eliminar_unidad', id_unidad=unidad.id_unidad)}}">Aceptar</a> 
+                <a href="#">Cancelar</a>
             </div>
         </div>
-
     {% endfor %}
     
     <div class="paginador">

@@ -183,7 +183,7 @@
     </div>
 
     <div class="alinear-horizontal">
-        <a class="regresar_menu" href="{{url_for('proyectos')}}">Regresar</a>
+        <a class="regresar_menu" href="{{url_for('dashboard')}}">Regresar</a>
         <a class="btn_registrar" href="#editar_proyecto" id="abrir_editar_proyecto">Editar datos</a>
         <a class="btn_registrar" href="#registrar_concepto" id="abrir_registrar_concepto">Nuevo concepto</a>
     </div>
@@ -204,7 +204,7 @@
             {% for concepto in conceptos %}
             <tr>
                 <td>
-                    <a href="{{ url_for('detalles_concepto', id_concepto=concepto[0]) }}" class=""> <!--BTN EDITAR CLASS-->
+                    <a href="{{ url_for('detalles_concepto', id_concepto=concepto[0]) }}" class="btn_ingresar_proyecto">
                         <i class="fa-solid fa-gear"></i>
                     </a>
                 </td>
@@ -314,5 +314,7 @@
     {% endfor %}
 
 </div>
+
+<script src="{{url_for('static', filename = 'JS/script2.js')}}" defer></script>
 
 {% endblock %}

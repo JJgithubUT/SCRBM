@@ -3,7 +3,59 @@
 {% block titulo %} Materiales {% endblock %}
 
 
-{% block head %} {% endblock %}
+{% block head %}
+<style>
+
+/* INICIO MODAL ELIMINAR MATERIAL */
+.modal_eliminar_material{
+    display: none;
+    position: fixed;
+    background-color: white;
+    color: black;
+    text-align: left;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    border: 1px solid black;
+    top: 140px;
+    margin-left: 20%;
+}
+
+.modal_eliminar_material.mostrar_modal_eliminar_material {
+    display: block;
+}
+
+
+.modal_eliminar_material h2{
+    margin-bottom: 20px;
+}
+
+.modal_eliminar_material p{
+    color: black;
+    margin-bottom: 20px;
+}
+
+.btns_eliminar_material{
+    display: flex;
+    justify-content: space-between;
+}
+
+.btns_eliminar_material a{
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: black;
+    text-decoration: none;
+    padding: 5px;
+    color: white;
+}
+
+.btns_eliminar_material a:hover{
+    background: linear-gradient(to top left, #33ccff 0%, #66ffff 100%);
+}
+/* FIN MODAL ELIMINAR MATERIAL */
+
+</style>
+{% endblock %}
 
 
 
@@ -16,22 +68,24 @@
 
     <table class="tabla_materiales">
         <thead>
+            <th>Editar</th>
             <th>Nombre del material</th>
             <th>Costo</th>
             <th>Unidad</th>
-            <th>Opciones</th>
+            <th>Eliminar</th>
         </thead>
         <tbody>
             {% for material in materiales %}
             <tr>
+                <td>
+                    <a href="{{url_for('editar_material', id_material=material.id_material )}}" class="btn_editar"><i class="fa-solid fa-pen-to-square" ></i></a>
+                </td>
                 <td>{{material.nombre_material}}</td>
                 <td>${{material.costo_material}}</td>
                 <td>{{material.nombre_unidad}}</td>
                 <td>
-                    <a href="{{url_for('editar_material', id_material=material.id_material )}}" class="btn_editar"><i class="fa-solid fa-pen-to-square" ></i></a>
                     <a class="btn_eliminar" href="#modal_eliminar_material_{{material.id_material}}"><i class="fa-solid fa-trash"></i></a>
                 </td>
-             
             </tr>
         </tbody>
         {% endfor %}

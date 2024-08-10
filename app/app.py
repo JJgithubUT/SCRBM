@@ -13,7 +13,6 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from Models.ModelUser import ModuleUser
 from Models.entities.user import User
 
-
 '''
 SE AÑADIO IMPORT LOGGIN ADVERTENCIA SE AÑADIO IMPORT LOGGIN ADVERTENCIA SE AÑADIO IMPORT LOGGIN ADVERTENCIA SE AÑADIO IMPORT LOGGIN ADVERTENCIA
 '''
@@ -41,6 +40,10 @@ def get_db_conection():
 #FIN LLAMADA DE BASE DE DATOS
 
 app.secret_key='mysecretkey'
+
+@app.route ("/")
+def login():
+    return render_template('index.html')
 
 ########################## INICIO L O G I N #################################
 Login_manager_app=LoginManager(app)
@@ -86,31 +89,21 @@ def registrarte():
 @app.route('/registrate/proceso', methods=('GET', 'POST'))
 def proceso_registro():
     if request.method == 'POST':
-        username = request.form['username']
+        nombre = request.form['username']
         apellidos = request.form['apellidos']
         correo = request.form['correo']
         password = request.form['password']
         password = generate_password_hash(password)
         conn = get_db_conection()
         cur = conn.cursor()
-        cur.execute('INSERT INTO public.usuarios(username, apellidos, correo_usuario, password) VALUES (%s, %s, %s, %s);',
-                    (username, apellidos, correo, password))
+        cur.execute('INSERT INTO public.usuarios(nombre, apellidos, correo_usuario, password) VALUES (%s, %s, %s, %s);',
+                    (nombre, apellidos, correo, password))
         conn.commit()
         cur.close()
         conn.close()
         return render_template('index.html')
     return render_template('index.html')
 ########################## FIN REGISTRARSE ####################################
-
-@app.route ("/")
-def login():
-    return render_template('index.html')
-
-
-
-@app.route ("/dashboard")
-def dashboard():
-    return render_template('dashboard.html')
 
 #-----------------------------------------------inicio PAGINADOR-------------------------------------------------------
 
@@ -161,19 +154,23 @@ def listar_unidad():
 
 #=======================================FIN LISTAR UNIDAD===========================================================
 
-#=============================================LISTAR MATERIAL=================================================
-def  listar_materiales():
-    conn= get_db_conection()
-    cur=conn.cursor()
-    cur.execute('SELECT id_material, nombre_material, costo_material, visibilidad_material, fk_unidad FROM materiales WHERE visibilidad_material = true ORDER BY nombre_material ASC')
-    materiales=cur.fetchall()
-    cur.close
-    conn.close
-    return materiales
-#=========================================FIN LISTAR MATERIAL=====================================================
+#==========================================LISTAR OfICIOS=============================================================
+
+def listar_oficios():
+    conn = get_db_conection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM oficios WHERE visibilidad IS true')
+    oficios= cur.fetchall()
+    cur.close()
+    conn.close()
+    return oficios
+  
+#==========================================FIN LISTAR OfICIOS=============================================================
 
 
-
+############################################################################################
+############################################################################################
+############################################################################################
 
 #-----------------------------------------------INICIO READ UNIDAD------------------------------------------------------
 
@@ -378,17 +375,16 @@ def eliminar_material(id_material):
 #---------------------------------------------READ MAQUINARIA---------------------------------------------------
 
 @app.route("/maquinaria")
+@login_required
 def maquinaria():
-    conn = get_db_conection()
-    cur = conn.cursor()
-    cur.execute('SELECT maquinaria.id_maquina, maquinaria.nombre_maquina, maquinaria.costo_maquina, ' 
-	            'maquinaria.vida_util, unidades.nombre_unidad FROM maquinaria INNER JOIN unidades ' 
-	            'ON fk_unidad = id_unidad WHERE  visibilidad IS true ')
-    maquinaria = cur.fetchall()
-    conn.commit()
-    cur.close()
-    conn.close()
-    return render_template('maquinaria.html', maquinaria = maquinaria)
+    sql_count='SELECT COUNT(*) FROM maquinaria where visibilidad=true'
+    sql_lim='SELECT maquinaria.id_maquina, maquinaria.nombre_maquina, maquinaria.costo_maquina, maquinaria.vida_util, unidades.nombre_unidad FROM maquinaria INNER JOIN unidades ON fk_unidad = id_unidad WHERE  visibilidad IS true LIMIT %s OFFsET %s'
+    paginado = paginador(sql_count,sql_lim, 1, 7)
+    return render_template('maquinaria.html', maquinaria = paginado[0],
+                           page = paginado[1],
+                           per_page = paginado[2], 
+                           total_items = paginado[3],
+                           total_pages = paginado[4])
 
 #--------------------------------------------REGISTRO MAQUINARIA----------------------------------------------------
 
@@ -475,8 +471,8 @@ def eliminar_maquinaria(id_maquina):
 @login_required
 def oficios():
     sql_count = 'SELECT COUNT(*) FROM oficios where visibilidad = true;'
-    sql_lim = 'SELECT id_oficio, nombre_oficio, unidades.nombre_unidad AS unitts, costo_oficio, visibilidad FROM oficios INNER JOIN unidades ON oficios.fk_unidad = unidades.id_unidad WHERE visibilidad = true ORDER BY id_oficio LIMIT %s OFFSET %s;'
-    paginado = paginador(sql_count, sql_lim,1,10)
+    sql_lim = 'SELECT id_oficio, nombre_oficio, unidades.nombre_unidad, costo_oficio, visibilidad FROM oficios INNER JOIN unidades ON oficios.fk_unidad = unidades.id_unidad WHERE visibilidad = true LIMIT %s OFFSET %s;'
+    paginado = paginador(sql_count, sql_lim,1,7)
     return render_template('oficios.html', oficios = paginado[0],
                            page = paginado[1],
                            per_page = paginado[2],
@@ -569,6 +565,277 @@ def eliminar_oficio(id_oficio):
 #=======================================FIN ELIMINAR OFICIO===================================================
 
 
+
+#-------------------------------------------------------------------------------------------------------------
+#------------------INICIO BASICOS INICIO BASICOS INICIO BASICOS INICIO BASICOS INICIO BASICOS-----------------
+#-------------------------------------------------------------------------------------------------------------
+
+#===================================INICIO LEER BASICOS====================================================
+@app.route('/basicos')
+def basicos():
+    conn = get_db_conection()
+    cur = conn.cursor()
+    cur.execute('SELECT id_unidad, nombre_unidad FROM unidades WHERE visibilidad_unidad=true;')
+    unidades = cur.fetchall()
+    cur.close()
+    conn.close()
+
+    sql_count = 'SELECT COUNT (*) FROM basicos WHERE visible_basico=true;' 
+    sql_lim = 'SELECT id_basico, nombre_basico, un.nombre_unidad, porcentaje_basico, fk_cuadrilla_basico, cantidad_cuad_basico, visible_basico FROM basicos ba INNER JOIN unidades un ON ba.fk_unidad_basico = un.id_unidad WHERE ba.visible_basico=true LIMIT %s OFFSET %s;'
+    paginado = paginador(sql_count, sql_lim,1,8)
+    return render_template('basicos.html', basicos = paginado[0],
+                           page = paginado[1],
+                           per_page = paginado[2],
+                           total_items = paginado[3],
+                           total_pages = paginado[4],
+                           unidades=unidades)
+#===================================FIN LEER BASICOS====================================================
+
+#===================================INICIO REGISTRAR BASICO====================================================
+@app.route('/basico/registrar', methods=('GET', 'POST'))
+def registrar_basico():
+    if request.method == 'POST':
+
+        nombre_basico = request.form['nombre_basico']
+        fk_unid_basico = request.form['fk_unid_basico']
+        porcentmaqyeq_bas = request.form['porcentmaqyeq_bas']
+
+        conn = get_db_conection()
+        cur = conn.cursor()
+
+        cur.execute('INSERT INTO basicos(nombre_basico, fk_unidad_basico, porcentaje_basico) VALUES(%s,%s,%s) RETURNING id_basico', (nombre_basico, fk_unid_basico, porcentmaqyeq_bas,))
+        id_basico_nuevo = cur.fetchone()[0]
+        conn.commit()
+
+        cur.execute('INSERT INTO cuadrillas(porcentaje_cuadrilla, fk_unidad_cuadrilla) VALUES (0, %s) RETURNING id_cuadrilla;', (fk_unid_basico,))
+        id_cuadrilla_nuevo = cur.fetchone()[0]
+        conn.commit()
+
+        cur.execute('UPDATE basicos SET fk_cuadrilla_basico=%s, cantidad_cuad_basico=1 WHERE id_basico=%s;', (id_cuadrilla_nuevo, id_basico_nuevo))
+        conn.commit()
+
+        cur.close()
+        conn.close()
+
+        return redirect(url_for('basicos'))
+    return redirect(url_for('basicos'))
+#===================================FIN REGISTRAR BASICO====================================================
+
+#===================================INICIO EDITAR BASICO====================================================
+@app.route('/basico/editar/<string:id_basico>', methods=('GET', 'POST'))
+def editar_basico(id_basico):
+    if request.method == 'POST':
+        nombre_basico = request.form['nombre_basico']
+        fk_unid_basico = request.form['fk_unid_basico']
+        porcentmaqyeq_bas = request.form['porcentmaqyeq_bas']
+        conn = get_db_conection()
+        cur = conn.cursor()
+        cur.execute('UPDATE basicos SET nombre_basico=%s, fk_unidad_basico=%s, porcentaje_basico=%s WHERE id_basico=%s;',
+                    (nombre_basico, fk_unid_basico, porcentmaqyeq_bas, id_basico,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('detalles_basico', id_basico=id_basico))
+    return redirect(url_for('detalles_basico', id_basico=id_basico))
+#===================================FIN EDITAR BASICO====================================================
+
+#===================================INICIO ELIMINAR BASICO====================================================
+@app.route('/basico/eliminar/<string:id_basico>')
+def eliminar_basico(id_basico):
+    conn = get_db_conection()
+    cur = conn.cursor()
+    valor = False
+    cur.execute('UPDATE basicos SET visible_basico=%s WHERE id_basico=%s;',
+                (valor, id_basico,))
+    cur.close()
+    conn.close()
+    return redirect(url_for('basicos'))
+#===================================FIN ELIMINAR BASICO====================================================
+
+#===================================INICIO DETALLES BASICO====================================================
+@app.route('/basico/detalles/<string:id_basico>')
+def detalles_basico(id_basico):
+    conn = get_db_conection()
+    cur = conn.cursor()
+
+    cur.execute('SELECT id_unidad, nombre_unidad FROM unidades WHERE visibilidad_unidad=true;')
+    unidades = cur.fetchall()
+
+    cur.execute('SELECT id_basico, nombre_basico, un.nombre_unidad, porcentaje_basico, fk_cuadrilla_basico, cantidad_cuad_basico, visible_basico, fk_unidad_basico FROM basicos ba INNER JOIN unidades un ON ba.fk_unidad_basico = un.id_unidad WHERE id_basico = %s;',
+                (id_basico,))
+    basicon = cur.fetchone()
+    fk_cuadrilla_basico_concepton = int(basicon[4])
+
+    ########## SUMAS / CONTADORES PARA COSTES
+
+    cur.execute('SELECT SUM(cant_basmat * costo_material) as costo_materiales_basico FROM basicosmateriales WHERE fk_id_basico = %s',
+                (id_basico,))
+    resultado = cur.fetchone()
+    if resultado is not None and resultado[0] is not None:
+        conteo_materiales_basico = resultado[0]
+    else:
+        conteo_materiales_basico = 0
+
+    cur.execute('SELECT SUM(cuof.cant_cuadofi * cuof.costo_oficio) AS pretotal, cuad.porcentaje_cuadrilla, SUM(cuof.cant_cuadofi * cuof.costo_oficio) * (1 + (cuad.porcentaje_cuadrilla / 100)) AS total_oficios FROM cuadrillasoficios cuof INNER JOIN cuadrillas cuad ON cuof.fk_id_cuadrilla = cuad.id_cuadrilla WHERE cuad.id_cuadrilla=%s GROUP BY cuad.porcentaje_cuadrilla;',
+                (fk_cuadrilla_basico_concepton,))
+    resultado = cur.fetchone()
+    if resultado is not None:
+        conteo_oficios_basico = tuple(resultado)
+    else:
+        conteo_oficios_basico = (0, 0, 0)
+
+    # Asegúrate de que conteo_oficios_basico[2] no sea None
+    if conteo_oficios_basico[2] is None:
+        conteo_oficios_basico = (conteo_oficios_basico[0], conteo_oficios_basico[1], 0)
+
+    # Calcula el costo total de básico
+    costo_total_de_basico = conteo_materiales_basico + conteo_oficios_basico[2]
+
+    ########## SELECTS DE MATERIALES
+
+    cur.execute('SELECT id_material, nombre_material, un.nombre_unidad, costo_material FROM materiales ma INNER JOIN unidades un ON ma.fk_unidad = un.id_unidad WHERE visibilidad_material=true;')
+    materiales = cur.fetchall()
+
+    cur.execute('SELECT id_basmat, ma.nombre_material, un.nombre_unidad, bm.costo_material, bm.cant_basmat, (cant_basmat * bm.costo_material) AS importe FROM basicosmateriales bm INNER JOIN materiales ma ON bm.fk_id_material = ma.id_material INNER JOIN basicos ba ON bm.fk_id_basico = ba.id_basico INNER JOIN unidades un ON ma.fk_unidad = un.id_unidad WHERE fk_id_basico=%s ORDER BY bm.id_basmat;',
+                (id_basico,))
+    materialones = cur.fetchall()
+
+    ########## SELECTS DE OFICIOS y CUADRILLAS
+
+    cur.execute('SELECT id_oficio, nombre_oficio, uni.nombre_unidad, costo_oficio, visibilidad FROM oficios ofi INNER JOIN unidades uni ON ofi.fk_unidad = uni.id_unidad;')
+    oficios = cur.fetchall()
+
+    cur.execute('SELECT ofi.id_oficio, ofi.nombre_oficio, uni.nombre_unidad, cuof.costo_oficio, cuof.cant_cuadofi, (cuof.costo_oficio * cuof.cant_cuadofi) AS importeoficio, cuof.id_cuadofi FROM cuadrillasoficios cuof INNER JOIN oficios ofi ON cuof.fk_id_oficio = ofi.id_oficio INNER JOIN cuadrillas cuad ON cuof.fk_id_cuadrilla = cuad.id_cuadrilla INNER JOIN basicos bas ON cuof.fk_id_cuadrilla = bas.fk_cuadrilla_basico INNER JOIN unidades uni ON ofi.fk_unidad = uni.id_unidad WHERE bas.fk_cuadrilla_basico = %s ORDER BY cuof.id_cuadofi;',
+                (fk_cuadrilla_basico_concepton,))
+    oficiones = cur.fetchall()
+
+    ##########
+
+    cur.close()
+    conn.close()
+    return render_template('detalles_basico.html',
+                           basicon=basicon, materiales=materiales,
+                           oficios=oficios, unidades=unidades,
+                           materialones=materialones,
+                           oficiones=oficiones,
+                           fk_cuadrilla_basico_concepton=fk_cuadrilla_basico_concepton,
+                           conteo_materiales_basico=conteo_materiales_basico,
+                           conteo_oficios_basico=conteo_oficios_basico,
+                           costo_total_de_basico=costo_total_de_basico)
+#===================================FIN DETALLES BASICO====================================================
+
+#===================================INICIO DETALLES BASICO - REGISTRAR MATERIAL====================================================
+@app.route('/basico/detalles/<string:id_basico>/registrarmaterial')
+def registrar_material_basico(id_basico):
+    fk_id_basico = request.args.get('fk_id_basico')
+    fk_id_material = request.args.get('fk_id_material')
+    costo_material = request.args.get('costo_material')
+    conn = get_db_conection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO public.basicosmateriales(fk_id_basico, fk_id_material, cant_basmat, costo_material) VALUES (%s, %s, 1, %s);',(fk_id_basico, fk_id_material, costo_material,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for('detalles_basico', id_basico=id_basico))
+
+#===================================FIN DETALLES BASICO - REGISTRAR MATERIAL====================================================
+
+#===================================INICIO DETALLES BASICO - EDITAR MATERIAL====================================================
+@app.route('/basico/detalles/<string:id_basico>/editarmaterial', methods=('GET', 'POST'))
+def editar_material_basico(id_basico):
+    id_basmat= request.form['id_basmat']
+    cant_basmat = request.form['cant_basmat']
+    if request.method == 'POST':
+        conn = get_db_conection()
+        cur = conn.cursor()
+        cur.execute('UPDATE basicosmateriales SET cant_basmat=%s WHERE id_basmat=%s;', (cant_basmat, id_basmat))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('detalles_basico', id_basico=id_basico))
+    return redirect(url_for('detalles_basico', id_basico=id_basico))
+#===================================FIN DETALLES BASICO - EDITAR MATERIALES====================================================
+
+#===================================INICIO DETALLES BASICO - ELIMINAR MATERIAL====================================================
+@app.route('/basico/detalles/<string:id_basico>/eliminarmaterial/<string:id_basmat>', methods=('GET', 'POST'))
+def eliminar_material_basico(id_basico, id_basmat):
+    conn = get_db_conection()
+    cur = conn.cursor()
+    cur.execute('DELETE FROM basicosmateriales WHERE id_basmat=%s;', (id_basmat,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for('detalles_basico', id_basico=id_basico))
+#===================================FIN DETALLES BASICO - ELIMINAR MATERIAL====================================================
+
+#===================================INICIO DETALLES BASICO - REGISTRAR OFICIO (a cuadrilla)====================================================
+@app.route('/basico/detalles/<string:id_basico>/registraroficio')
+def registrar_oficio_basico(id_basico):
+    fk_id_cuadrilla = request.args.get('fk_id_cuadrilla')
+    fk_id_oficio = request.args.get('fk_id_oficio')
+    costo_oficio = request.args.get('costo_oficio')
+    conn = get_db_conection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO public.cuadrillasoficios(fk_id_cuadrilla, fk_id_oficio, cant_cuadofi, costo_oficio) VALUES (%s, %s, 1, %s);',
+                (fk_id_cuadrilla, fk_id_oficio, costo_oficio))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for('detalles_basico', id_basico=id_basico))
+#===================================FIN DETALLES BASICO - REGISTRAR OFICIO (a cuadrilla)====================================================
+
+#===================================INICIO DETALLES BASICO - EDITAR MATERIAL====================================================
+@app.route('/basico/detalles/<string:id_basico>/editaroficio', methods=('GET', 'POST'))
+def editar_oficio_basico(id_basico):
+    id_cuadofi = request.form['id_cuadofi']
+    cant_cuadofi = request.form['cant_cuadofi']
+    if request.method == 'POST':
+        conn = get_db_conection()
+        cur = conn.cursor()
+        cur.execute('UPDATE public.cuadrillasoficios SET cant_cuadofi=%s WHERE id_cuadofi=%s;',
+                    (cant_cuadofi, id_cuadofi,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('detalles_basico', id_basico=id_basico))
+    return redirect(url_for('detalles_basico', id_basico=id_basico))
+#===================================FIN DETALLES BASICO - EDITAR MATERIALES====================================================
+
+#===================================FIN DETALLES BASICO - EDITAR MATERIALES====================================================
+@app.route('/basico/detalles/<string:id_basico>/editar_cuadrilla', methods=('GET', 'POST'))
+def editar_cuadrilla_basico(id_basico):
+    id_cuadrilla = request.form['id_cuadrilla']
+    porcentaje_cuadrilla = request.form['porcentaje_cuadrilla']
+    print(f'----------id_cuadrilla:{id_cuadrilla}--------porcentaje_cuadrilla:{porcentaje_cuadrilla}----------')
+    if request.method == 'POST':
+        conn = get_db_conection()
+        cur = conn.cursor()
+        cur.execute('UPDATE cuadrillas SET porcentaje_cuadrilla=%s WHERE id_cuadrilla=%s;',
+                    (porcentaje_cuadrilla, id_cuadrilla,))
+        conn.commit()
+        cur.close()
+        conn.close()
+        return redirect(url_for('detalles_basico', id_basico=id_basico))
+    return redirect(url_for('detalles_basico', id_basico=id_basico))
+#===================================FIN DETALLES BASICO - EDITAR MATERIALES====================================================
+
+#===================================INICIO DETALLES BASICO - ELIMINAR OFICIO====================================================
+@app.route('/basico/detalles/<string:id_basico>/eliminaroficio/<string:id_cuadofi>', methods=('GET', 'POST'))
+def eliminar_oficio_basico(id_basico, id_cuadofi):
+    conn = get_db_conection()
+    cur = conn.cursor()
+    cur.execute('DELETE FROM cuadrillasoficios WHERE id_cuadofi=%s;', (id_cuadofi,))
+    conn.commit()
+    cur.close()
+    conn.close()
+    return redirect(url_for('detalles_basico', id_basico=id_basico))
+#===================================FIN DETALLES BASICO - ELIMINAR OFICIO====================================================
+
+#-------------------------------------------------------------------------------------------------------------
+#-------------------------FIN BASICOS FIN BASICOS FIN BASICOS FIN BASICOS FIN BASICOS-------------------------
+#-------------------------------------------------------------------------------------------------------------
+
+
 #-------------------------------------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------------------------------------
@@ -577,25 +844,25 @@ def eliminar_oficio(id_oficio):
 #-------------------------------------------------------------------------------------------------------------
 #-------------------------------------------------------------------------------------------------------------
 
-#=========================================== Inicio Read Proyecto ===========================================
+#-=============================================DASHBOARD===========================================================
 
-@app.route('/proyectos')
-def proyectos():
-    conn = get_db_conection()
-    cur = conn.cursor()
-    cur.execute('SELECT id_proyecto, fk_creador_proyecto, nombre_proyecto, titulo_proyecto, colonia_proyecto, municipio_proyecto, estado_proyecto, nombrecliente_proyecto, visible_proyecto, gubernamental_proyecto FROM public.proyectos WHERE visible_proyecto=true;')
-    proyectos = cur.fetchall()
-    cur.close()
-    conn.close()
-    return render_template('proyectos.html', proyectos=proyectos)
+@app.route ("/dashboard")
+@login_required
+def dashboard():
+    sql_count = 'SELECT COUNT(*) FROM proyectos WHERE visible_proyecto = true' 
+    sql_lim = 'SELECT * FROM public.proyectos WHERE visible_proyecto=true;'
+    paginado = paginador(sql_count, sql_lim,1,10)
+    
+    return render_template('dashboard.html',
+                           proyectos= paginado[0],
+                           page = paginado[1],
+                           per_page = paginado[2],
+                           total_items = paginado[3],
+                           total_pages = paginado[4])
 
-#=========================================== Fin Read Proyecto ==============================================
+#-=============================================FIN DASHBOARD===========================================================
 
 #=========================================== Inicio Create Proyecto ==============================================
-
-@app.route('/proyecto/registrar')
-def registrar_proyecto():
-    return render_template('registrar_proyecto.html')
 
 @app.route('/proyecto/registrar/proceso', methods=('GET', 'POST'))
 def registrar_proyecto_proceso():
@@ -617,8 +884,8 @@ def registrar_proyecto_proceso():
         conn.commit()
         cur.close()
         conn.close()
-        return redirect(url_for('proyectos'))
-    return redirect(url_for('proyectos'))
+        return redirect(url_for('dashboard'))
+    return redirect(url_for('bashboard'))
 
 #=========================================== Fin Create Proyecto ==============================================
 
@@ -671,10 +938,10 @@ def detalles_proyecto(id_proyecto):
     cur.execute('SELECT id_proyecto, fk_creador_proyecto, nombre_proyecto, titulo_proyecto, colonia_proyecto, municipio_proyecto, estado_proyecto, nombrecliente_proyecto, visible_proyecto, gubernamental_proyecto FROM proyectos WHERE id_proyecto=%s;', (id_proyecto,))
     proyectaso = cur.fetchall()
     conn.commit()
-    cur.execute('SELECT id_concepto, nombre_concepto, co.fk_proy_con, uni.nombre_unidad, cantidad_concepto, fk_cuad_con, cantcuad_con, porcentajemaqyeq_con, indirectos_con, financiamiento_con, utilidad_con, visible_con FROM conceptos co INNER JOIN unidades uni ON co.fk_unid_con = uni.id_unidad WHERE co.visible_con=true AND co.fk_proy_con=%s;', (id_proyecto,))
+    cur.execute('SELECT id_concepto, nombre_concepto, co.fk_proy_con, uni.nombre_unidad, cantidad_concepto, fk_cuadrilla_con, cant_cuadrilla_con, porcentaje_con, indirectos_con, financiamiento_con, utilidad_con, visible_con FROM conceptos co INNER JOIN unidades uni ON co.fk_unid_con = uni.id_unidad WHERE co.visible_con=true AND co.fk_proy_con=%s;', (id_proyecto,))
     conceptos=cur.fetchall()
     conn.commit()
-    cur.execute('SELECT id_unidad, nombre_unidad FROM public.unidades;')
+    cur.execute('SELECT id_unidad, nombre_unidad FROM public.unidades WHERE visibilidad_unidad=true;')
     unidades=cur.fetchall()
     conn.commit()   
     cur.close()
@@ -703,7 +970,7 @@ def registrar_concepto(id_proyecto):
             sql = '''
                 INSERT INTO public.conceptos(
                     nombre_concepto, fk_proy_con, fk_unid_con, cantidad_concepto, 
-                    porcentajemaqyeq_con, indirectos_con, financiamiento_con, utilidad_con
+                    porcentaje_con, indirectos_con, financiamiento_con, utilidad_con
                 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s);
             '''
             valores = (nombre_concepto, fk_proy_con, fk_unid_con, cantidad_concepto, 
@@ -744,7 +1011,7 @@ def detalles_concepto(id_concepto):
     conn = get_db_conection()
     cur = conn.cursor()
 
-    sqlconceptos = "SELECT id_concepto, nombre_concepto, pr.nombre_proyecto, un.nombre_unidad, co.porcentajemaqyeq_con, co.indirectos_con, financiamiento_con, utilidad_con, fk_proy_con FROM conceptos co INNER JOIN unidades un ON co.fk_unid_con = un.id_unidad INNER JOIN proyectos pr ON co.fk_proy_con = pr.id_proyecto WHERE visible_con = true AND id_concepto = %s;"
+    sqlconceptos = "SELECT id_concepto, nombre_concepto, pr.nombre_proyecto, un.nombre_unidad, co.porcentaje_con, co.indirectos_con, financiamiento_con, utilidad_con, fk_proy_con FROM conceptos co INNER JOIN unidades un ON co.fk_unid_con = un.id_unidad INNER JOIN proyectos pr ON co.fk_proy_con = pr.id_proyecto WHERE visible_con = true AND id_concepto = %s;"
     cur.execute(sqlconceptos, (id_concepto,))
     concepton = cur.fetchone()
     conn.commit()
@@ -759,7 +1026,7 @@ def detalles_concepto(id_concepto):
     materiales = cur.fetchall()
     conn.commit()
 
-    sqlmaquinariaconcepto = "SELECT mq.id_maquina, mq.nombre_maquina, cq.costo_maq, cq.cant_conmaq, (cq.costo_maq*cq.cant_conmaq) AS importe, mq.vida_util, mq.visibilidad, un.nombre_unidad, cq.id_conmaq, cq.fk_id_con FROM maquinaria mq INNER JOIN unidades un ON mq.fk_unidad = un.id_unidad INNER JOIN conceptosmaquinaria cq ON mq.id_maquina = cq.fk_id_maq WHERE cq.fk_id_con = %s;"
+    sqlmaquinariaconcepto = "SELECT mq.id_maquina, mq.nombre_maquina, cq.costo_maq, cq.cant_conmaq, (cq.costo_maq*cq.cant_conmaq) AS importe, mq.vida_util, mq.visibilidad, un.nombre_unidad, cq.id_conmaq, cq.fk_id_con, (mq.costo_maquina / mq.vida_util) FROM maquinaria mq INNER JOIN unidades un ON mq.fk_unidad = un.id_unidad INNER JOIN conceptosmaquinaria cq ON mq.id_maquina = cq.fk_id_maq WHERE cq.fk_id_con = %s;"
     cur.execute(sqlmaquinariaconcepto, (id_concepto,))
     maquinon = cur.fetchall()
     conn.commit()
@@ -927,10 +1194,16 @@ def perfil():
 
     
 
+
 def pagina_no_encontrada(error):
     return render_template('error404.html')
+
+
+def acceso_no_autorizado(error):
+    return render_template('error_401.html')
 
 if __name__ =='__main__':
     csrf.init_app(app)
     app.register_error_handler(404, pagina_no_encontrada)
+    app.register_error_handler(401, acceso_no_autorizado)
     app.run(debug=True, port = 5)

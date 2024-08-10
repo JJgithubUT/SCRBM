@@ -14,6 +14,58 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 
 
+// inicio ELIMINAR UNIDAD
+document.addEventListener('DOMContentLoaded', (event) => {
+    const eliminarButtons = document.querySelectorAll('.btn_eliminar');
+    const modals = document.querySelectorAll('.modal_eliminar_unidad');
+
+    eliminarButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const modalId = button.getAttribute('href').substring(1);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('mostrar_modal_eliminar_unidad');
+            }
+        });
+    });
+
+    modals.forEach(modal => {
+        const cancelButton = modal.querySelector('a[href="#"]');
+        cancelButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            modal.classList.remove('mostrar_modal_eliminar_unidad');
+        });
+    });
+});
+// fin ELIMINAR UNIDAD
+
+// inicio ELIMINAR MATERIAL
+document.addEventListener('DOMContentLoaded', (event) => {
+    const eliminarButtons = document.querySelectorAll('.btn_eliminar');
+    const modals = document.querySelectorAll('.modal_eliminar_material');
+
+    eliminarButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const modalId = button.getAttribute('href').substring(1);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('mostrar_modal_eliminar_material');
+            }
+        });
+    });
+
+    modals.forEach(modal => {
+        const cancelButton = modal.querySelector('a[href="#"]');
+        cancelButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            modal.classList.remove('mostrar_modal_eliminar_material');
+        });
+    });
+});
+// fin ELIMINAR MATERIAL
+
 // inicio ELIMINAR OFICIO
 document.addEventListener('DOMContentLoaded', (event) => {
     const eliminarButtons = document.querySelectorAll('.btn_eliminar');
@@ -40,19 +92,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 // fin ELIMINAR OFICIO
 
-
-
-// inicio EDITAR MATERIALCONCEPTO
-// fin EDITAR MATERIALCONCEPTO
-
-// inicio ELIMINAR MATERIALCONCEPTO
-// fin ELIMINAR MATERIALCONCEPTO
-
-
-// inicio EDITAR MATERIALCONCEPTO
+// inicio ELIMINAR MAQUINARIA
 document.addEventListener('DOMContentLoaded', (event) => {
-    const eliminarButtons = document.querySelectorAll('.btn_editar_materialconcepto');
-    const modals = document.querySelectorAll('.modal_editar_materialconcepto');
+    const eliminarButtons = document.querySelectorAll('.btn_eliminar');
+    const modals = document.querySelectorAll('.modal_eliminar_maquinaria');
 
     eliminarButtons.forEach(button => {
         button.addEventListener('click', (event) => {
@@ -60,7 +103,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             const modalId = button.getAttribute('href').substring(1);
             const modal = document.getElementById(modalId);
             if (modal) {
-                modal.classList.add('mostrar_modal_editar_materialconcepto');
+                modal.classList.add('mostrar_modal_eliminar_maquinaria');
             }
         });
     });
@@ -69,11 +112,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const cancelButton = modal.querySelector('a[href="#"]');
         cancelButton.addEventListener('click', (event) => {
             event.preventDefault();
-            modal.classList.remove('mostrar_modal_editar_materialconcepto');
+            modal.classList.remove('mostrar_modal_eliminar_maquinaria');
         });
     });
 });
-// fin EDITAR MATERIALCONCEPTO
+// fin ELIMINAR MAQUINARIA
+
+
 
 // inicio ELIMINAR MATERIALCONCEPTO
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -101,13 +146,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
 });
 // fin ELIMINAR MATERIALCONCEPTO
 
-
-
-
-// inicio EDITAR MAQUINARIACONCEPTO
+// inicio REGISTRAR MAQUINARIACONCEPTO
 document.addEventListener('DOMContentLoaded', (event) => {
-    const eliminarButtons = document.querySelectorAll('.btn_editar_maquinariaconcepto');
-    const modals = document.querySelectorAll('.modal_editar_maquinariaconcepto');
+    const eliminarButtons = document.querySelectorAll('.btn_avanzar');
+    const modals = document.querySelectorAll('.modal_registrar_maquinariaconcepto');
 
     eliminarButtons.forEach(button => {
         button.addEventListener('click', (event) => {
@@ -115,7 +157,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
             const modalId = button.getAttribute('href').substring(1);
             const modal = document.getElementById(modalId);
             if (modal) {
-                modal.classList.add('mostrar_modal_editar_maquinariaconcepto');
+                modal.classList.add('mostrar_modal_registrar_maquinariaconcepto');
             }
         });
     });
@@ -124,11 +166,11 @@ document.addEventListener('DOMContentLoaded', (event) => {
         const cancelButton = modal.querySelector('a[href="#"]');
         cancelButton.addEventListener('click', (event) => {
             event.preventDefault();
-            modal.classList.remove('mostrar_modal_editar_maquinariaconcepto');
+            modal.classList.remove('mostrar_modal_registrar_maquinariaconcepto');
         });
     });
 });
-// fin EDITAR MAQUINARIACONCEPTO
+// fin REGISTRAR MAQUINARIACONCEPTO
 
 // inicio ELIMINAR MAQUINARIACONCEPTO
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -157,6 +199,31 @@ document.addEventListener('DOMContentLoaded', (event) => {
 // fin ELIMINAR MAQUINARIACONCEPTO
 
 
+// inicio REGISTRAR BASICO
+document.addEventListener('DOMContentLoaded', (event) => {
+    const eliminarButtons = document.querySelectorAll('.btn_registrar');
+    const modals = document.querySelectorAll('.modal_registrar_basico');
+
+    eliminarButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const modalId = button.getAttribute('href').substring(1);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('mostrar_modal_registrar_basico');
+            }
+        });
+    });
+
+    modals.forEach(modal => {
+        const cancelButton = modal.querySelector('a[href="#"]');
+        cancelButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            modal.classList.remove('mostrar_modal_registrar_basico');
+        });
+    });
+});
+// fin REGISTRAR BASICO
 
 // inicio REGISTRAR CONCEPTO
 document.addEventListener('DOMContentLoaded', () => {
@@ -225,84 +292,85 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 // fin EDITAR PROYECTO
 
-// -----// inicio BUSQUEDA MATERIALES //-----
-document.getElementById('searchBoxmats').addEventListener('input', function() {
-    var query = this.value.toLowerCase();
-    var results = document.querySelectorAll('#resultsmats .resultmats');
-    var resultsContainer = document.getElementById('resultsmats');
-    var hasVisibleResults = false;
 
-    results.forEach(function(result) {
-        var text = result.textContent.toLowerCase();
-        if (text.includes(query)) {
-            result.classList.remove('hiddenmats');
-            hasVisibleResults = true;
-        } else {
-            result.classList.add('hiddenmats');
-        }
+
+// inicio EDITAR BASICO
+document.addEventListener('DOMContentLoaded', () => {
+    const modalRegistrarConcepto = document.getElementById('editar_basico');
+    const btnAbrirModalRegistrarConcepto = document.querySelector('.btn_registrar[href="#editar_basico"]');
+    const btnCancelarRegistrarConcepto = document.getElementById('btn_cancelar_editar_basico');
+    if (btnAbrirModalRegistrarConcepto) {
+        btnAbrirModalRegistrarConcepto.addEventListener('click', (event) => {
+            event.preventDefault();
+            modalRegistrarConcepto.classList.add('show');
+        });
+    }
+    if (btnCancelarRegistrarConcepto) {
+        btnCancelarRegistrarConcepto.addEventListener('click', (event) => {
+            event.preventDefault();
+            modalRegistrarConcepto.classList.remove('show');
+        });
+    }
+});
+
+// fin EDITAR BASICO
+
+
+
+
+
+
+
+
+
+// inicio ELIMINAR MATERIALBASICO
+document.addEventListener('DOMContentLoaded', (event) => {
+    const eliminarButtons = document.querySelectorAll('.btn_eliminar');
+    const modals = document.querySelectorAll('.modal_eliminar_materialbasico');
+
+    eliminarButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const modalId = button.getAttribute('href').substring(1);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('mostrar_modal_eliminar_materialbasico');
+            }
+        });
     });
 
-    if (query.length > 0 && hasVisibleResults) {
-        resultsContainer.style.display = 'block';
-    } else {
-        resultsContainer.style.display = 'none';
-    }
+    modals.forEach(modal => {
+        const cancelButton = modal.querySelector('a[href="#"]');
+        cancelButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            modal.classList.remove('mostrar_modal_eliminar_materialbasico');
+        });
+    });
 });
+// fin ELIMINAR MATERIALBASICO
 
-document.getElementById('searchBoxmats').addEventListener('focus', function() {
-    if (this.value.length > 0) {
-        document.getElementById('resultsmats').style.display = 'block';
-    }
-});
+// inicio ELIMINAR MATERIALCONCEPTO
+document.addEventListener('DOMContentLoaded', (event) => {
+    const eliminarButtons = document.querySelectorAll('.btn_eliminar');
+    const modals = document.querySelectorAll('.modal_eliminar_oficiobasico');
 
-document.getElementById('searchBoxmats').addEventListener('blur', function() {
-    setTimeout(function() {
-        document.getElementById('resultsmats').style.display = 'none';
-    }, 200);
-});
-
-document.getElementById('resultsmats').addEventListener('mousedown', function(e) {
-    e.preventDefault();
-});
-// -----// fin BUSQUEDA MATERIALES //-----
-
-// -----// inicio BUSQUEDA MAQUINARIA //-----
-document.getElementById('searchBoxmaqs').addEventListener('input', function() {
-    var query = this.value.toLowerCase();
-    var results = document.querySelectorAll('#resultsmaqs .resultmaqs');
-    var resultsContainer = document.getElementById('resultsmaqs');
-    var hasVisibleResults = false;
-
-    results.forEach(function(result) {
-        var text = result.textContent.toLowerCase();
-        if (text.includes(query)) {
-            result.classList.remove('hiddenmaqs');
-            hasVisibleResults = true;
-        } else {
-            result.classList.add('hiddenmaqs');
-        }
+    eliminarButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault();
+            const modalId = button.getAttribute('href').substring(1);
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.add('mostrar_modal_eliminar_oficiobasico');
+            }
+        });
     });
 
-    if (query.length > 0 && hasVisibleResults) {
-        resultsContainer.style.display = 'block';
-    } else {
-        resultsContainer.style.display = 'none';
-    }
+    modals.forEach(modal => {
+        const cancelButton = modal.querySelector('a[href="#"]');
+        cancelButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            modal.classList.remove('mostrar_modal_eliminar_oficiobasico');
+        });
+    });
 });
-
-document.getElementById('searchBoxmaqs').addEventListener('focus', function() {
-    if (this.value.length > 0) {
-        document.getElementById('resultsmaqs').style.display = 'block';
-    }
-});
-
-document.getElementById('searchBoxmaqs').addEventListener('blur', function() {
-    setTimeout(function() {
-        document.getElementById('resultsmaqs').style.display = 'none';
-    }, 200);
-});
-
-document.getElementById('resultsmaqs').addEventListener('mousedown', function(e) {
-    e.preventDefault();
-});
-// -----// fin BUSQUEDA MAQUINARIA //-----
+// fin ELIMINAR MATERIALCONCEPTO
