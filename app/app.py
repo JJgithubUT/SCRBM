@@ -954,10 +954,15 @@ def detalles_proyecto(id_proyecto):
     conn.commit()
     cur.execute('SELECT id_unidad, nombre_unidad FROM public.unidades WHERE visibilidad_unidad=true;')
     unidades=cur.fetchall()
+    conn.commit()
+    cur.execute('SELECT * FROM vista_costo_proyectos WHERE fk_proy_con = %s;', (id_proyecto,))
+    costo_total_de_proyecto = cur.fetchone()[1]
     conn.commit()   
     cur.close()
     conn.close()
-    return render_template('detalles_proyecto.html', proyectaso=proyectaso[0], conceptos=conceptos, unidades=unidades)
+    return render_template('detalles_proyecto.html', proyectaso=proyectaso[0], conceptos=conceptos,
+                           unidades=unidades, costo_total_de_proyecto=costo_total_de_proyecto
+                           )
 
 #=========================================== Fin LEER DETALLES Proyecto (CONCEPTOS DE PROYECTO) ==============================================
 

@@ -171,7 +171,10 @@
         <p>Creador: {{proyectaso.10}} {{proyectaso.11}}</p>
         <p>Dirección: {{proyectaso.4}}, {{proyectaso.5}}, {{proyectaso.6}}.</p>
         <p>Cliente: {{proyectaso.7}}</p>
-        <p>
+    </div>
+
+    <div class="alinear-horizontal">
+        <p style="color: blue;">
             Tipo: 
             {% if proyectaso.9 == true %}
                 Gubernamental
@@ -179,13 +182,10 @@
                 Partícular
             {% endif %}
         </p>
-        <p>Costo: </p>
-    </div>
-
-    <div class="alinear-horizontal">
         <a class="regresar_menu" href="{{url_for('dashboard')}}">Regresar</a>
         <a class="btn_registrar" href="#editar_proyecto" id="abrir_editar_proyecto">Editar datos</a>
         <a class="btn_registrar" href="#registrar_concepto" id="abrir_registrar_concepto">Nuevo concepto</a>
+        <p style="color: green;">Importe del proyecto: <b>${{ costo_total_de_proyecto | round(3) }}</b></p>
     </div>
     
     <p>Conceptos del proyecto</p>
@@ -210,9 +210,9 @@
                 </td>
                 <td>{{concepto.1}}</td>
                 <td>{{concepto.3}}</td>
-                <td>{{ concepto.20 | round(3) }}</td>
+                <td>${{ concepto.20 | round(3) }}</td>
                 <td>{{concepto.10}}</td>
-                <td>{{concepto.4}}%</td>
+                <td>${{concepto.4}}%</td>
                 <td>{{ concepto.21 | round(3) }}</td>
                 <td>
                     <a class="btn_eliminar" href="#modal_eliminar_concepto_{{concepto.id_concepto}}">
