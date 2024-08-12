@@ -168,7 +168,7 @@
         <p>N°: {{proyectaso.0}}</p>
         <p>Nombre: {{proyectaso.2}}</p>
         <p>Título: {{proyectaso.3}}</p>
-        <p>Creador: </p>
+        <p>Creador: {{proyectaso.10}} {{proyectaso.11}}</p>
         <p>Dirección: {{proyectaso.4}}, {{proyectaso.5}}, {{proyectaso.6}}.</p>
         <p>Cliente: {{proyectaso.7}}</p>
         <p>
@@ -210,10 +210,10 @@
                 </td>
                 <td>{{concepto.1}}</td>
                 <td>{{concepto.3}}</td>
-                <td></td>
-                <td>{{concepto.4}}</td>
-                <td>{{concepto.7}}%</td>
-                <td></td>
+                <td>{{ concepto.20 | round(3) }}</td>
+                <td>{{concepto.10}}</td>
+                <td>{{concepto.4}}%</td>
+                <td>{{ concepto.21 | round(3) }}</td>
                 <td>
                     <a class="btn_eliminar" href="#modal_eliminar_concepto_{{concepto.id_concepto}}">
                         <i class="fa-solid fa-trash"></i>
@@ -257,6 +257,9 @@
 
                 <p>% de Utilidad</p>
                 <input type="number" step="0.00001" placeholder="Utilidad..." name="utilidad_con" required>%
+
+                <p>% de tratamiento</p>
+                <input type="number" step="0.00001" placeholder="% de tratamiento" name="tratamiento_con" required>%
 
             <p></p>
             <div class="btns_eliminar_oficio">

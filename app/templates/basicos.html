@@ -45,6 +45,38 @@
     margin-bottom: 20px;
 }
 /* fin estilos registrar basico */
+
+
+.modal_eliminar_basico{
+    display: none;
+    position: fixed;
+    background-color: white;
+    color: black;
+    text-align: left;
+    padding: 20px;
+    width: 300px;
+    border-radius: 15px;
+    border: 1px solid black;
+    top: 140px;
+    margin-left: 20%;
+}
+
+.modal_eliminar_basico.mostrar_modal_eliminar_basico {
+    display: block;
+}
+
+
+.moda_eliminar_basico h2{
+    margin-bottom: 20px;
+}
+
+.modal_eliminar_basico p{
+    color: black;
+    margin-bottom: 20px;
+}
+
+
+
 </style>
 {% endblock %}
 
@@ -68,12 +100,12 @@
             <tr>
                 <td>{{basico.nombre_basico}}</td>
                 <td>{{basico.nombre_unidad}}</td>
-                <td>$$$$$</td>
+                <td>${{ basico.suma_total | round(5) }}</td>
                 <td>
                     <a href="{{url_for('detalles_basico', id_basico=basico.id_basico)}}" class="btn_registrar_basico"><i class="fa-solid fa-pen-to-square" ></i></a>
                 </td>
                 <td>
-
+                    <a class="btn_eliminar" href="#modal_eliminar_basico_{{ basico.id_basico }}"><i class="fa-solid fa-trash"></i></a>
                 </td>
             </tr>
             {% endfor %}
@@ -131,6 +163,18 @@
         <a class="contador">{{page}}/{{total_pages}} </a>
         {% endif %}
     </div>
+
+{% for basico in basicos %}
+<div class="modal_eliminar_basico" id="modal_eliminar_basico_{{ basico.id_basico }}">
+    <h3 style="margin-bottom: 20px; font-size: 25px;">Eliminar basico</h3>
+    <p>¿Estas seguro de eliminar este basico</p>
+    <p>{{basico.nombre_basico}} </p>
+    <div class="btns_modal_crear_proyecto">
+        <a href="{{url_for('eliminar_basico', id_basico=basico.id_basico )}}">Aceptar</a>
+        <a href="#">Cancelar</a>
+    </div>
+</div>
+{% endfor %}
 
 </div>
 {% endblock %}

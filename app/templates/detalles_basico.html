@@ -177,7 +177,8 @@
     <div class="alinear-horizontal">
         <a class="" href="{{url_for('basicos')}}">Regresar</a>
         <a class="btn_registrar" href="#editar_basico">Editar</a>
-        <p style="color: green;"><b>Costo de "{{basicon.1}}": ${{costo_total_de_basico}}</b></p>
+        <p style="color: green;"><b>Subtotal sin el %: ${{basicon.11}}</b></p>
+        <p style="color: green;"><b>Costo de "{{basicon.1}}": ${{basicon.10}}</b></p>
     </div>
 
 <details open>
@@ -197,7 +198,7 @@
             </div>
         </div>
 
-        <p>Costo: <b style="color: green;">${{conteo_materiales_basico}}</b>.</p>
+        <p>Importe de materiales: <b style="color: green;">${{conteo_materiales_basico}}</b>.</p>
     </div>
 
     {% if materialones %}
@@ -256,16 +257,32 @@
             </div>
         </div>
 
-        <p>Pretotal: <b style="color: green;">${{conteo_oficios_basico[0]}}</b></p>
-        <p>% de maquinaria y equipo:
+        <p>Importe de oficios: <b style="color: green;">${{ (conteo_oficios_basico[3] * basicon[5]) | round(5) }}</b></p>
+
+    </div>
+
+    <div class="alinear-horizontal">
+
+        <p>Precosto: <b style="color: green;">${{conteo_oficios_basico[1]}}</b></p>
+        <p>% de maquinaria y equipo de cuadrilla: </p>
             <form action="{{ url_for('editar_cuadrilla_basico', id_basico=basicon[0] )}}" method="POST">
                 <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
-                <input type="number" step="0.00001" placeholder="% maq. y eq..." name="porcentaje_cuadrilla" value="{{conteo_oficios_basico[1]}}" style="background-color: rgba(255, 255, 255, 0.3); border: 1px solid #ccc; color: green;" required>
+                <input type="number" step="0.00001" placeholder="% maq. y eq..." name="porcentaje_cuadrilla" value="{{conteo_oficios_basico[2]}}" style="background-color: rgba(255, 255, 255, 0.3); border: 1px solid #ccc; color: green;" required>
                 <input type="hidden" name="id_cuadrilla" value="{{fk_cuadrilla_basico_concepton}}" required>
                 <button type="submit"><i class="fa-solid fa-pen"></i></button>
             </form>
+
+    </div>
+
+    <div class="alinear-horizontal">
+
+        <p>
+            <form action="{{ url_for('editar_cantidad_cuadrilla_basico', id_basico=basicon[0]) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+                <input type="number" step="0.00001" placeholder="Cantidad de cuadrilla..." name="cantidad_cuad_basico" value="{{basicon[5]}}" style="background-color: rgba(255, 255, 255, 0.3); border: 1px solid #ccc; color: green;" required>
+                <button type="submit"><i class="fa-solid fa-pen"></i></button>
+            </form>
         </p>
-        <p>total: <b style="color: green;">${{conteo_oficios_basico[2]}}</b></p>
 
     </div>
 

@@ -73,6 +73,10 @@
             <form method="post" action="{{url_for('registrar_proyecto_proceso')}}">
                 <input type="hidden" name="csrf_token" value="{{csrf_token()}}">
 
+                <h1>{{current_user.id_usuario}}</h1>
+
+                <input type="hidden" name="fk_creador_proyecto" value="{{current_user.id_usuario}}" required>
+
                 <h1>Crear un proyecto</h1>
                 <div class="textos_nombre_proyectos">
                     <p id="nombre_proyecto">Nombre</p>
